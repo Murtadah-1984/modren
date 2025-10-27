@@ -12,10 +12,12 @@
         "php": "^8.4.0",
         "laravel/framework": "^12.33.0",
         "laravel/sanctum": "^4.2",
+        "laravel/ui": "^4.6",
         "nunomaduro/essentials": "^1.0.1",
         "nwidart/laravel-modules": "^12.0.4",
         "spatie/laravel-activitylog": "^4.10.2",
-        "spatie/laravel-permission": "^6.21"
+        "spatie/laravel-permission": "^6.21",
+        "yajra/laravel-datatables": "12.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.0.7",

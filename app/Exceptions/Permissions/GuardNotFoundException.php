@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Exceptions\Permissions;
+
+/**
+ * Guard Not Found Exception
+ */
+class GuardNotFoundException extends AccessException implements \Throwable
+{
+    protected $code = 404;
+
+    public function __construct(string $message = 'Guard not found', ?\Throwable $previous = null)
+    {
+        parent::__construct($message, $this->code, $previous);
+    }
+
+    public static function withName(string $guardName): self
+    {
+        return new self("Guard '{$guardName}' not found");
+    }
+
+    public function getMessage(): string
+    {
+        // TODO: Implement getMessage() method.
+    }
+
+    public function getCode()
+    {
+        // TODO: Implement getCode() method.
+    }
+
+    public function getFile(): string
+    {
+        // TODO: Implement getFile() method.
+    }
+
+    public function getLine(): int
+    {
+        // TODO: Implement getLine() method.
+    }
+
+    public function getTrace(): array
+    {
+        // TODO: Implement getTrace() method.
+    }
+
+    public function getTraceAsString(): string
+    {
+        // TODO: Implement getTraceAsString() method.
+    }
+
+    public function getPrevious()
+    {
+        // TODO: Implement getPrevious() method.
+    }
+
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
+    }
+}
