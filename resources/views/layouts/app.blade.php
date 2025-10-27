@@ -7,8 +7,14 @@
     <body>
         <!-- Modals -->
         @include('partials.modals')
+        <!-- Sidenav tool bar -->
+        @include('partials.side-toolbar')
 
+        <!-- Sidenav -->
+        @include('partials.sidenav', ['category' => $category ?? 'dashboards', 'page' => $page ?? 'crypto'])
 
+        <!-- Topnav -->
+        @include('partials.topnav', ['category' => $category ?? 'dashboards', 'page' => $page ?? 'crypto'])
         <!-- Main -->
         <main class="main px-lg-6">
             @yield('content')

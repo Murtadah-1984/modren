@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTOs\Users;
 
 use App\ValueObjects\Users\Avatar;
@@ -10,21 +12,21 @@ use App\ValueObjects\Users\UserName;
 /**
  * CreateUserDTO - Using Value Objects
  */
-readonly class CreateUserDTO
+final readonly class CreateUserDTO
 {
     public function __construct(
         public UserName $name,
-        public Email    $email,
+        public Email $email,
         public Password $password,
-        public ?bool    $emailVerified = false,
-        public ?bool    $isActive = true,
-        public ?array   $roles = null,
-        public ?array   $permissions = null,
-        public ?array   $profileData = null,
-        public ?Avatar  $avatar = null,
+        public ?bool $emailVerified = false,
+        public ?bool $isActive = true,
+        public ?array $roles = null,
+        public ?array $permissions = null,
+        public ?array $profileData = null,
+        public ?Avatar $avatar = null,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromArray(array  $data): self
     {
         return new self(
             name: UserName::fromString($data['name']),
@@ -66,7 +68,13 @@ readonly class CreateUserDTO
         return $this->avatar;
     }
 
-    public function hasRoles()
+    public function hasRoles(): bool
     {
+        return $this->roles !== null;
+    }
+
+    public function hasPermissions(): bool
+    {
+        return $this->roles !== null;
     }
 }

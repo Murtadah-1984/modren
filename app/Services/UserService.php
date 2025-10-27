@@ -4,26 +4,37 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Contracts\UserRepositoryInterface;
-use App\DTOs\Users\CreateUserDTO;
-use App\DTOs\Users\UpdateUserDTO;
+use App\Actions\User\Auth\AssignRoleAction;
+use App\Actions\User\Auth\GivePermissionAction;
+use App\Actions\User\Auth\RemoveRoleAction;
+use App\Actions\User\Auth\RevokePermissionAction;
+use App\Actions\User\Auth\SyncPermissionsAction;
+use App\Actions\User\Auth\SyncRolesAction;
+use App\Actions\User\Avatar\RemoveAvatarAction;
+use App\Actions\User\Avatar\UpdateAvatarAction;
+use App\Actions\User\Manage\CreateUserAction;
+use App\Actions\User\Manage\DeleteUserAction;
+use App\Actions\User\Manage\UpdatePasswordAction;
+use App\Actions\User\Manage\UpdateUserAction;
+use App\Actions\User\Retrieve\FindUserByEmailAction;
+use App\Actions\User\Retrieve\FindUserByIdAction;
+use App\Actions\User\Retrieve\GetAllUsersAction;
+use App\Actions\User\Retrieve\GetPaginatedUsersAction;
+use App\Actions\User\Retrieve\GetUsersByRoleAction;
+use App\Actions\User\Retrieve\GetUsersWithPermissionAction;
+use App\Actions\User\Retrieve\SearchUsersAction;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Storage;
 
 final readonly class UserService
 {
-    public function __construct(
-        private UserRepositoryInterface $userRepository
-    ) {}
-
     /**
      * Get all users
      */
     public function getAllUsers(array $relations = []): Collection
     {
-        return $this->userRepository->all($relations);
+        return app(GetAllUsersAction::class)->execute($relations);
     }
 
     /**
@@ -31,7 +42,7 @@ final readonly class UserService
      */
     public function getPaginatedUsers(int $perPage = 15): LengthAwarePaginator
     {
-        return $this->userRepository->paginate($perPage);
+        return app(GetPaginatedUsersAction::class)->execute($perPage);
     }
 
     /**
@@ -39,7 +50,7 @@ final readonly class UserService
      */
     public function searchUsers(string $query): Collection
     {
-        return $this->userRepository->search($query);
+        return app(SearchUsersAction::class)->execute($query);
     }
 
     /**
@@ -47,7 +58,7 @@ final readonly class UserService
      */
     public function findUserById(int $id): User
     {
-        return $this->userRepository->findById($id);
+        return app(FindUserByIdAction::class)->execute($id);
     }
 
     /**
@@ -55,26 +66,15 @@ final readonly class UserService
      */
     public function findUserByEmail(string $email): User
     {
-        return $this->userRepository->findByEmail($email);
+        return app(FindUserByEmailAction::class)->execute($email);
     }
 
     /**
      * Create a new user
      */
-    public function createUser(CreateUserDTO $dto): User
+    public function createUser(array $data): User
     {
-        // Create user
-        $user = $this->userRepository->create($dto->toArray());
-
-        // Assign roles if provided
-        if ($dto->hasRoles()) {
-            $this->userRepository->assignRole($user, $dto->getRoles());
-        }
-
-        // Give permissions if provided
-        if ($dto->hasPermissions()) {
-            $this->userRepository->givePermission($user, $dto->getPermissions());
-        }
+        $user = app(CreateUserAction::class)->execute($data);
 
         return $user->fresh(['roles', 'permissions']);
     }
@@ -82,11 +82,11 @@ final readonly class UserService
     /**
      * Update an existing user
      */
-    public function updateUser(int $id, UpdateUserDTO $dto): User
+    public function updateUser(int $id, array $data): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->update($user, $dto->toArray());
+        return app(UpdateUserAction::class)->execute($user, $data);
     }
 
     /**
@@ -94,14 +94,9 @@ final readonly class UserService
      */
     public function deleteUser(int $id): bool
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        // Delete avatar if exists
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-
-        return $this->userRepository->delete($user);
+        return app(DeleteUserAction::class)->execute($user);
     }
 
     /**
@@ -109,9 +104,9 @@ final readonly class UserService
      */
     public function updatePassword(int $id, string $password): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->updatePassword($user, $password);
+        return app(UpdatePasswordAction::class)->execute($user, $password);
     }
 
     /**
@@ -119,17 +114,9 @@ final readonly class UserService
      */
     public function updateAvatar(int $id, $avatarFile): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        // Delete old avatar if exists
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-
-        // Store new avatar
-        $avatarPath = $avatarFile->store('avatars', 'public');
-
-        return $this->userRepository->updateAvatar($user, $avatarPath);
+        return app(UpdateAvatarAction::class)->execute($user, $avatarFile);
     }
 
     /**
@@ -137,24 +124,19 @@ final readonly class UserService
      */
     public function removeAvatar(int $id): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        // Delete avatar file if exists
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
-        }
-
-        return $this->userRepository->removeAvatar($user);
+        return app(RemoveAvatarAction::class)->execute($user);
     }
 
     /**
      * Assign role(s) to user
      */
-    public function assignRole(int $id, array $roles): User
+    public function assignRole(AssignRoleAction $action, int $id, array $roles): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->assignRole($user, $roles);
+        return app(AssignRoleAction::class)->execute($user, $roles);
     }
 
     /**
@@ -162,9 +144,9 @@ final readonly class UserService
      */
     public function removeRole(int $id, array $roles): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->removeRole($user, $roles);
+        return app(RemoveRoleAction::class)->execute($user, $roles);
     }
 
     /**
@@ -172,9 +154,9 @@ final readonly class UserService
      */
     public function syncRoles(int $id, array $roles): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->syncRoles($user, $roles);
+        return app(SyncRolesAction::class)->execute($user, $roles);
     }
 
     /**
@@ -182,9 +164,9 @@ final readonly class UserService
      */
     public function givePermission(int $id, array $permissions): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->givePermission($user, $permissions);
+        return app(GivePermissionAction::class)->execute($user, $permissions);
     }
 
     /**
@@ -192,9 +174,9 @@ final readonly class UserService
      */
     public function revokePermission(int $id, array $permissions): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->revokePermission($user, $permissions);
+        return app(RevokePermissionAction::class)->execute($user, $permissions);
     }
 
     /**
@@ -202,17 +184,17 @@ final readonly class UserService
      */
     public function syncPermissions(int $id, array $permissions): User
     {
-        $user = $this->userRepository->findById($id);
+        $user = app(FindUserByIdAction::class)->execute($id);
 
-        return $this->userRepository->syncPermissions($user, $permissions);
+        return app(SyncPermissionsAction::class)->execute($user, $permissions);
     }
 
     /**
      * Get users by role
      */
-    public function getUsersByRole(string $roleName): Collection
+    public function getUsersByRole(GetUsersByRoleAction $action, string $roleName): Collection
     {
-        return $this->userRepository->getUsersByRole($roleName);
+        return app(GetUsersByRoleAction::class)->execute($roleName);
     }
 
     /**
@@ -220,6 +202,6 @@ final readonly class UserService
      */
     public function getUsersWithPermission(string $permissionName): Collection
     {
-        return $this->userRepository->getUsersWithPermission($permissionName);
+        return app(GetUsersWithPermissionAction::class)->execute($permissionName);
     }
 }

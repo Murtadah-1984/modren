@@ -457,13 +457,14 @@ class UserService
 ```
 
 ### Example 2: Controller with HandlesExceptions Trait
+
 ```php
 namespace App\Http\Controllers;
 
 use Modules\Core\User\Presentation\Exceptions\HandlesExceptions;
 use Modules\Core\User\Application\Services\UserService;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     use HandlesExceptions;
 

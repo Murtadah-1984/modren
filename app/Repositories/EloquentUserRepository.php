@@ -1,41 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Contracts\UserRepositoryInterface;
-use App\Models\User;
-use App\Exceptions\Users\UserNotFoundException;
-use App\Exceptions\Users\UserCreationException;
-use App\Exceptions\Users\UserUpdateException;
-use App\Exceptions\Users\UserDeletionException;
-use App\Events\Users\UserCreated;
-use App\Events\Users\UserUpdated;
-use App\Events\Users\UserDeleted;
-use App\Events\Users\UserAvatarUpdated;
 use App\Events\Users\UserAvatarRemoved;
+use App\Events\Users\UserAvatarUpdated;
+use App\Events\Users\UserCreated;
+use App\Events\Users\UserDeleted;
 use App\Events\Users\UserPasswordUpdated;
-use App\Events\Users\UserRoleAssigned;
-use App\Events\Users\UserRoleRemoved;
-use App\Events\Users\UserRolesSynced;
 use App\Events\Users\UserPermissionGiven;
 use App\Events\Users\UserPermissionRevoked;
 use App\Events\Users\UserPermissionsSynced;
+use App\Events\Users\UserRoleAssigned;
+use App\Events\Users\UserRoleRemoved;
+use App\Events\Users\UserRolesSynced;
+use App\Events\Users\UserUpdated;
+use App\Exceptions\Users\UserCreationException;
+use App\Exceptions\Users\UserDeletionException;
+use App\Exceptions\Users\UserNotFoundException;
+use App\Exceptions\Users\UserUpdateException;
+use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class EloquentUserRepository implements UserRepositoryInterface
+final class EloquentUserRepository implements UserRepositoryInterface
 {
     public function __construct(
-        protected User $model
+        private User $model
     ) {}
 
     public function findById(int $id): ?User
     {
         $user = $this->model->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new UserNotFoundException("User with ID {$id} not found.");
         }
 
@@ -46,17 +50,17 @@ class EloquentUserRepository implements UserRepositoryInterface
     {
         $user = $this->model->where('email', $email)->first();
 
-        if (!$user) {
+        if (! $user) {
             throw new UserNotFoundException("User with email {$email} not found.");
         }
 
         return $user;
     }
 
-    public function all(array $relations = []): Collection
+    public function all(array $relations): Collection
     {
         // Use 'with' if relations are provided
-        if (!empty($relations)) {
+        if (! empty($relations)) {
             return $this->model->with($relations)->get();
         }
 
@@ -68,6 +72,9 @@ class EloquentUserRepository implements UserRepositoryInterface
         return $this->model->paginate($perPage);
     }
 
+    /**
+     * @throws UserCreationException
+     */
     public function create(array $data): User
     {
         try {
@@ -84,7 +91,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserCreated($user));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserCreationException("Failed to create user: {$e->getMessage()}");
         }
@@ -107,7 +114,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserUpdated($user));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to update user: {$e->getMessage()}");
         }
@@ -125,7 +132,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserDeleted($user));
 
             return $deleted;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserDeletionException("Failed to delete user: {$e->getMessage()}");
         }
@@ -144,7 +151,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserAvatarUpdated($user, $avatarPath));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to update avatar: {$e->getMessage()}");
         }
@@ -164,7 +171,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserAvatarRemoved($user, $oldAvatar));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to remove avatar: {$e->getMessage()}");
         }
@@ -183,7 +190,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserPasswordUpdated($user));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to update password: {$e->getMessage()}");
         }
@@ -212,7 +219,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserRoleAssigned($user, is_array($roles) ? $roles : [$roles]));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to assign role: {$e->getMessage()}");
         }
@@ -231,7 +238,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserRoleRemoved($user, is_array($roles) ? $roles : [$roles]));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to remove role: {$e->getMessage()}");
         }
@@ -250,7 +257,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserRolesSynced($user, $roles));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to sync roles: {$e->getMessage()}");
         }
@@ -269,7 +276,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserPermissionGiven($user, is_array($permissions) ? $permissions : [$permissions]));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to give permission: {$e->getMessage()}");
         }
@@ -288,7 +295,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserPermissionRevoked($user, is_array($permissions) ? $permissions : [$permissions]));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to revoke permission: {$e->getMessage()}");
         }
@@ -307,7 +314,7 @@ class EloquentUserRepository implements UserRepositoryInterface
             event(new UserPermissionsSynced($user, $permissions));
 
             return $user;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw new UserUpdateException("Failed to sync permissions: {$e->getMessage()}");
         }

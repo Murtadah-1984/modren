@@ -5,8 +5,6 @@
 </head>
 
 <body>
-<!-- Modals -->
-@include('partials.modals')
 
 <!-- Main -->
 <main class="main px-lg-6">

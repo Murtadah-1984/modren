@@ -10,10 +10,10 @@ use App\DTOs\Permissions\UpdatePermissionDTO;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Permission;
 
-final class PermissionService
+final readonly class PermissionService
 {
     public function __construct(
-        private readonly PermissionRepositoryInterface $permissionRepository
+        private PermissionRepositoryInterface $permissionRepository
     ) {}
 
     /**

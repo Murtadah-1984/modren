@@ -24,6 +24,11 @@ final class Password implements JsonSerializable
         $this->hashedValue = $hashedPassword;
     }
 
+    public static function fromPlainText(mixed $password): Password
+    {
+        return new self(Password::hash($password));
+    }
+
     public function __toString(): string
     {
         return $this->hashedValue;
@@ -31,6 +36,7 @@ final class Password implements JsonSerializable
 
     /**
      * Create from plain text password
+     * @throws InvalidPasswordException
      */
     public static function fromPlain(string $plainPassword): self
     {
@@ -137,5 +143,10 @@ final class Password implements JsonSerializable
     private static function hash(string $password): string
     {
         return password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    public function getHashedValue(): string
+    {
+        return $this->hashedValue;
     }
 }

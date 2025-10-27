@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Contracts\RoleRepositoryInterface;
@@ -8,10 +10,10 @@ use App\DTOs\Roles\UpdateRoleDTO;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Role;
 
-class RoleService
+final readonly class RoleService
 {
     public function __construct(
-        protected RoleRepositoryInterface $roleRepository
+        private RoleRepositoryInterface $roleRepository
     ) {}
 
     /**
@@ -68,6 +70,7 @@ class RoleService
     public function updateRole(int $id, UpdateRoleDTO $dto, ?string $guardName = null): Role
     {
         $role = $this->roleRepository->findById($id, $guardName);
+
         return $this->roleRepository->update($role, $dto->toArray());
     }
 
@@ -77,6 +80,7 @@ class RoleService
     public function deleteRole(int $id, ?string $guardName = null): bool
     {
         $role = $this->roleRepository->findById($id, $guardName);
+
         return $this->roleRepository->delete($role);
     }
 
@@ -86,6 +90,7 @@ class RoleService
     public function givePermission(int $id, array $permissions, ?string $guardName = null): Role
     {
         $role = $this->roleRepository->findById($id, $guardName);
+
         return $this->roleRepository->givePermissionTo($role, $permissions);
     }
 
@@ -95,6 +100,7 @@ class RoleService
     public function revokePermission(int $id, array $permissions, ?string $guardName = null): Role
     {
         $role = $this->roleRepository->findById($id, $guardName);
+
         return $this->roleRepository->revokePermissionTo($role, $permissions);
     }
 
@@ -104,6 +110,7 @@ class RoleService
     public function syncPermissions(int $id, array $permissions, ?string $guardName = null): Role
     {
         $role = $this->roleRepository->findById($id, $guardName);
+
         return $this->roleRepository->syncPermissions($role, $permissions);
     }
 
@@ -113,6 +120,7 @@ class RoleService
     public function getRolePermissions(int $id, ?string $guardName = null): Collection
     {
         $role = $this->roleRepository->findById($id, $guardName);
+
         return $this->roleRepository->getPermissions($role);
     }
 
@@ -122,6 +130,7 @@ class RoleService
     public function getRoleUsers(int $id, ?string $guardName = null): Collection
     {
         $role = $this->roleRepository->findById($id, $guardName);
+
         return $this->roleRepository->getUsersWithRole($role);
     }
 
