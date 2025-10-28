@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Roles\StoreRoleRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\RBAC\Interface\Http\Requests\Roles\StoreRoleRequest;
 
 it('passes with valid role data', function () {
     $data = [

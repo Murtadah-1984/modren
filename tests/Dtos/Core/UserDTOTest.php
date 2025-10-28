@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Dtos\Core;
 
 use App\DTOs\Users\CreateUserDTO;
@@ -11,7 +13,7 @@ use App\ValueObjects\Users\Password;
 use App\ValueObjects\Users\UserName;
 use PHPUnit\Framework\TestCase;
 
-class UserDTOTest extends TestCase
+final class UserDTOTest extends TestCase
 {
     public function test_create_user_dto_from_array()
     {

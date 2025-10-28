@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Permissions\StorePermissionRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\RBAC\Interface\Http\Requests\Permissions\StorePermissionRequest;
 
 it('passes validation with valid data', function () {
     $data = [

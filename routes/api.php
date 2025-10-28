@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Api\V1\AuthBaseController;
-use App\Http\Controllers\Api\V1\PermissionBaseController;
-use App\Http\Controllers\Api\V1\RoleBaseController;
 use App\Http\Controllers\Api\V1\UserBaseController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\RBAC\Interface\Http\Controllers\PermissionBaseController;
+use Modules\RBAC\Interface\Http\Controllers\RoleBaseController;
 
 Route::prefix('v1')->as('api.')->group(function () {
     // Public routes
@@ -26,96 +27,7 @@ Route::prefix('v1')->as('api.')->middleware(['api', 'auth:sanctum'])->group(func
     Route::post('/refresh', [AuthBaseController::class, 'refresh']);
 
     /*
-|--------------------------------------------------------------------------
-| User Routes (with permissions)
-|--------------------------------------------------------------------------
-*/
-    Route::prefix('users')->name('users.')->group(function () {
 
-        // Index / View users
-        Route::get('/', [UserBaseController::class, 'index'])
-            ->name('index')
-            ->middleware('permission:users.view');
-
-        // Create user
-        Route::get('/create', [UserBaseController::class, 'create'])
-            ->name('create')
-            ->middleware('permission:users.create');
-
-        Route::post('/', [UserBaseController::class, 'store'])
-            ->name('store')
-            ->middleware('permission:users.create');
-
-        // Edit user
-        Route::get('/{id}/edit', [UserBaseController::class, 'edit'])
-            ->name('edit')
-            ->middleware('permission:users.edit');
-
-        Route::put('/{id}', [UserBaseController::class, 'update'])
-            ->name('update')
-            ->middleware('permission:users.edit');
-
-        // Delete user
-        Route::delete('/{id}', [UserBaseController::class, 'destroy'])
-            ->name('destroy')
-            ->middleware('permission:users.delete');
-
-        // Restore / Force Delete
-        Route::post('/{id}/restore', [UserBaseController::class, 'restore'])
-            ->name('restore')
-            ->middleware('permission:users.restore');
-
-        Route::delete('/{id}/force-delete', [UserBaseController::class, 'forceDelete'])
-            ->name('force-delete')
-            ->middleware('permission:users.force-delete');
-
-        // Password / Avatar
-        Route::put('/{id}/password', [UserBaseController::class, 'updatePassword'])
-            ->name('update-password')
-            ->middleware('permission:users.edit');
-
-        Route::post('/{id}/avatar', [UserBaseController::class, 'updateAvatar'])
-            ->name('update-avatar')
-            ->middleware('permission:users.edit');
-
-        Route::delete('/{id}/avatar', [UserBaseController::class, 'removeAvatar'])
-            ->name('remove-avatar')
-            ->middleware('permission:users.edit');
-
-        // Roles and Permissions Management
-        Route::post('/{id}/roles/assign', [UserBaseController::class, 'assignRole'])
-            ->name('assign-role')
-            ->middleware('permission:users.edit');
-
-        Route::delete('/{id}/roles/remove', [UserBaseController::class, 'removeRole'])
-            ->name('remove-role')
-            ->middleware('permission:users.edit');
-
-        Route::put('/{id}/roles/sync', [UserBaseController::class, 'syncRoles'])
-            ->name('sync-roles')
-            ->middleware('permission:users.edit');
-
-        Route::post('/{id}/permissions/give', [UserBaseController::class, 'givePermission'])
-            ->name('give-permission')
-            ->middleware('permission:users.edit');
-
-        Route::delete('/{id}/permissions/revoke', [UserBaseController::class, 'revokePermission'])
-            ->name('revoke-permission')
-            ->middleware('permission:users.edit');
-
-        Route::put('/{id}/permissions/sync', [UserBaseController::class, 'syncPermissions'])
-            ->name('sync-permissions')
-            ->middleware('permission:users.edit');
-
-        // Query routes
-        Route::get('/by-role/{roleName}', [UserBaseController::class, 'getUsersByRole'])
-            ->name('by-role')
-            ->middleware('permission:users.view');
-
-        Route::get('/by-permission/{permissionName}', [UserBaseController::class, 'getUsersWithPermission'])
-            ->name('by-permission')
-            ->middleware('permission:users.view');
-    });
 
     /*
     |--------------------------------------------------------------------------

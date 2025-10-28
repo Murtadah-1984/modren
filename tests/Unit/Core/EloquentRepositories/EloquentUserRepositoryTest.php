@@ -1,19 +1,18 @@
 <?php
 
-use App\Repositories\EloquentUserRepository;
+declare(strict_types=1);
+
 use App\Models\User;
-use App\Exceptions\Users\{
-    UserNotFoundException,
-    UserCreationException,
-    UserUpdateException,
-    UserDeletionException
-};
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
+use Modules\User\Domain\Exceptions\UserCreationException;
+use Modules\User\Domain\Exceptions\UserDeletionException;
+use Modules\User\Domain\Exceptions\UserNotFoundException;
+use Modules\User\Domain\Exceptions\UserUpdateException;
+use Modules\User\Infrastructure\Repositories\EloquentUserRepository;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
@@ -36,8 +35,12 @@ it('can create a user', function () {
 });
 
 it('throws exception when user creation fails', function () {
-    $repo = new EloquentUserRepository(new class {
-        public function create() { throw new Exception('fail'); }
+    $repo = new EloquentUserRepository(new class
+    {
+        public function create()
+        {
+            throw new Exception('fail');
+        }
     });
 
     $repo->create(['email' => 'x@example.com']);
@@ -60,8 +63,12 @@ it('can update a user', function () {
 });
 
 it('throws exception when update fails', function () {
-    $repo = new EloquentUserRepository(new class {
-        public function update() { throw new Exception('fail'); }
+    $repo = new EloquentUserRepository(new class
+    {
+        public function update()
+        {
+            throw new Exception('fail');
+        }
     });
 
     $repo->update(new User(), ['name' => 'X']);
@@ -75,8 +82,12 @@ it('can delete a user', function () {
 });
 
 it('throws exception when delete fails', function () {
-    $repo = new EloquentUserRepository(new class {
-        public function delete() { throw new Exception('fail'); }
+    $repo = new EloquentUserRepository(new class
+    {
+        public function delete()
+        {
+            throw new Exception('fail');
+        }
     });
     $repo->delete(new User());
 })->throws(UserDeletionException::class);

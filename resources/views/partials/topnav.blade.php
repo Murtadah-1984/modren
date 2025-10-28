@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="col-auto d-flex">
-                <!-- User -->
+                <!-- old -->
                 <div class="dropdown my-n2">
                     <a class="btn btn-link d-inline-flex align-items-center dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         @php
@@ -33,7 +33,6 @@
                             // Combine them
                             $initials = $firstInitial . $lastInitial;
                         @endphp
-
                         <span class="avatar avatar-sm avatar-status avatar-status-success me-3">
                             @if(!empty($user->photo))
                                 <img class="avatar-img rounded-circle" src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}">

@@ -1,11 +1,12 @@
 <?php
 
-use App\Services\RoleService;
-use App\Contracts\RoleRepositoryInterface;
+declare(strict_types=1);
+
 use App\DTOs\Roles\CreateRoleDTO;
 use App\DTOs\Roles\UpdateRoleDTO;
+use Modules\RBAC\Application\Services\RoleService;
+use Modules\RBAC\Domain\Interfaces\RoleRepositoryInterface;
 use Spatie\Permission\Models\Role;
-use Illuminate\Database\Eloquent\Collection;
 
 beforeEach(function () {
     $this->repository = Mockery::mock(RoleRepositoryInterface::class);

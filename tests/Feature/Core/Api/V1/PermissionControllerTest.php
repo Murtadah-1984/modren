@@ -1,17 +1,16 @@
 <?php
 
-namespace Tests\Feature\Core\Api\V1;
+declare(strict_types=1);
 
+namespace Tests\Feature\Core\Api\V1;
 
 use App\DTOs\Permissions\CreatePermissionDTO;
 use App\DTOs\Permissions\UpdatePermissionDTO;
-use App\Services\PermissionService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Mockery;
+use Modules\RBAC\Application\Services\PermissionService;
+use Tests\TestCase;
 
-class PermissionControllerTest extends TestCase
+final class PermissionControllerTest extends TestCase
 {
     protected $permissionService;
 
@@ -24,6 +23,12 @@ class PermissionControllerTest extends TestCase
         $this->app->instance(PermissionService::class, $this->permissionService);
     }
 
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+
     public function test_index_returns_permissions()
     {
         $this->permissionService
@@ -31,7 +36,7 @@ class PermissionControllerTest extends TestCase
             ->once()
             ->with(null)
             ->andReturn([
-                ['id' => 1, 'name' => 'view posts']
+                ['id' => 1, 'name' => 'view posts'],
             ]);
 
         $response = $this->getJson('/api/v1/permissions');
@@ -39,7 +44,7 @@ class PermissionControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => [['id' => 1, 'name' => 'view posts']]
+                'data' => [['id' => 1, 'name' => 'view posts']],
             ]);
     }
 
@@ -58,7 +63,7 @@ class PermissionControllerTest extends TestCase
         $response->assertStatus(201)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 2, 'name' => 'edit posts']
+                'data' => ['id' => 2, 'name' => 'edit posts'],
             ]);
     }
 
@@ -75,7 +80,7 @@ class PermissionControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'name' => 'view posts']
+                'data' => ['id' => 1, 'name' => 'view posts'],
             ]);
     }
 
@@ -94,7 +99,7 @@ class PermissionControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'name' => 'edit posts']
+                'data' => ['id' => 1, 'name' => 'edit posts'],
             ]);
     }
 
@@ -111,7 +116,7 @@ class PermissionControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'message' => 'Permission deleted successfully'
+                'message' => 'Permission deleted successfully',
             ]);
     }
 
@@ -128,13 +133,7 @@ class PermissionControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['exists' => true]
+                'data' => ['exists' => true],
             ]);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

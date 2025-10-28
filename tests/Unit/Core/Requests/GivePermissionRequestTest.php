@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Users\GivePermissionRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\User\Interface\Http\Requests\Users\GivePermissionRequest;
 
 it('passes with valid permissions array', function () {
     $data = ['permissions' => ['view-users', 'edit-users']];

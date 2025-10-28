@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 // database/factories/PermissionFactory.php
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Spatie\Permission\Models\Permission;
 
-class PermissionFactory extends Factory
+final class PermissionFactory extends Factory
 {
     protected $model = Permission::class;
 
@@ -18,4 +20,3 @@ class PermissionFactory extends Factory
         ];
     }
 }
-

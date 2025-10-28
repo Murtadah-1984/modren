@@ -10,16 +10,49 @@
             <div class="d-flex ms-auto d-xl-none">
                 <div class="dropdown my-n2">
                     <a class="btn btn-link d-inline-flex align-items-center dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        @php
+                            $user = Auth::user();
+
+                            // Split the name into parts
+                            $nameParts = explode(' ', trim($user->name));
+
+                            // First letter of the first name
+                            $firstInitial = strtoupper(substr($nameParts[0] ?? '', 0, 1));
+
+                            // First letter of the last name (if available)
+                            $lastInitial = '';
+                            if (count($nameParts) > 1) {
+                                $lastInitial = strtoupper(substr(end($nameParts), 0, 1));
+                            }
+
+                            // Combine them
+                            $initials = $firstInitial . $lastInitial;
+                        @endphp
                 <span class="avatar avatar-sm avatar-status avatar-status-success me-3">
-                  <img class="avatar-img" src="./assets/img/photos/photo-6.jpg" alt="...">
-                </span>
+                            @if(!empty($user->photo))
+                        <img class="avatar-img rounded-circle" src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}">
+                    @else
+                        <span class="avatar-initials bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center">
+                                    {{ $initials }}
+                        </span>
+                    @endif
+                        </span>
+
                         <span class="d-none d-xl-block">{{ Auth::user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="./account/account.html">Account</a></li>
-                        <li><a class="dropdown-item" href="./auth/password-reset.html" target="_blank">Change password</a></li>
+                        <li><a class="dropdown-item" href="{{ route('password.update') }}" target="_blank">Change password</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                    <i class="mr-2 fas fa-sign-out-alt"></i>
+                                    {{ __('Log Out') }}
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
 
@@ -113,6 +146,7 @@
             <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidenavBaseCollapse" aria-controls="sidenavBaseCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
 
             <!-- Collapse -->
             <div class="collapse navbar-collapse" id="sidenavBaseCollapse">

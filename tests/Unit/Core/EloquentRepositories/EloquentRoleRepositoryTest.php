@@ -1,15 +1,15 @@
 <?php
 
-use App\Repositories\EloquentRoleRepository;
-use App\Exceptions\Roles\{
-    RoleNotFoundException,
-    RoleCreationException,
-    RoleUpdateException,
-    RoleDeletionException
-};
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Event;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Modules\RBAC\Domain\Exceptions\Roles\RoleCreationException;
+use Modules\RBAC\Domain\Exceptions\Roles\RoleDeletionException;
+use Modules\RBAC\Domain\Exceptions\Roles\RoleNotFoundException;
+use Modules\RBAC\Domain\Exceptions\Roles\RoleUpdateException;
+use Modules\RBAC\Infrastructure\Repositories\EloquentRoleRepository;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     $this->repository = new EloquentRoleRepository(new Role());
@@ -29,8 +29,12 @@ it('can create a role', function () {
 });
 
 it('throws exception if role creation fails', function () {
-    $this->repository = new EloquentRoleRepository(new class {
-        public function create() { throw new Exception('DB error'); }
+    $this->repository = new EloquentRoleRepository(new class
+    {
+        public function create()
+        {
+            throw new Exception('DB error');
+        }
     });
 
     $this->repository->create(['name' => 'x']);
@@ -56,8 +60,12 @@ it('can update a role', function () {
 
 it('throws exception when update fails', function () {
     $role = Role::create(['name' => 'test', 'guard_name' => 'web']);
-    $mockRepo = new EloquentRoleRepository(new class {
-        public function update() { throw new Exception('Update fail'); }
+    $mockRepo = new EloquentRoleRepository(new class
+    {
+        public function update()
+        {
+            throw new Exception('Update fail');
+        }
     });
 
     $mockRepo->update($role, ['name' => 'bad']);
@@ -72,8 +80,12 @@ it('can delete a role', function () {
 });
 
 it('throws exception when delete fails', function () {
-    $mockRepo = new EloquentRoleRepository(new class {
-        public function delete() { throw new Exception('delete fail'); }
+    $mockRepo = new EloquentRoleRepository(new class
+    {
+        public function delete()
+        {
+            throw new Exception('delete fail');
+        }
     });
 
     $mockRepo->delete(new Role());

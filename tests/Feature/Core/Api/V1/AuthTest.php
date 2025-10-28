@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Core\Api\V1;
 
-
-use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Tests\TestCase;
 
-class AuthTest extends TestCase
+final class AuthTest extends TestCase
 {
     /** @test */
     public function user_can_register()
@@ -19,14 +19,14 @@ class AuthTest extends TestCase
         Event::fake();
 
         $response = $this->postJson('/api/register', [
-            'name' => 'Test User',
+            'name' => 'Test old',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
 
         $response->assertStatus(201)
-            ->assertJsonStructure(['user' => ['id','name','email'], 'token']);
+            ->assertJsonStructure(['user' => ['id', 'name', 'email'], 'token']);
 
         $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
 
@@ -47,7 +47,7 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-            ->assertJsonStructure(['user' => ['id','name','email'], 'token']);
+            ->assertJsonStructure(['user' => ['id', 'name', 'email'], 'token']);
     }
 
     /** @test */
@@ -126,7 +126,7 @@ class AuthTest extends TestCase
         $token = $user->createToken('api-token')->plainTextToken;
 
         $response = $this->withHeaders([
-            'Authorization' => "Bearer $token"
+            'Authorization' => "Bearer $token",
         ])->postJson('/api/refresh');
 
         $response->assertStatus(200)
@@ -143,7 +143,7 @@ class AuthTest extends TestCase
         $token = $user->createToken('api-token')->plainTextToken;
 
         $response = $this->withHeaders([
-            'Authorization' => "Bearer $token"
+            'Authorization' => "Bearer $token",
         ])->getJson('/api/user');
 
         $response->assertStatus(200)
@@ -163,7 +163,7 @@ class AuthTest extends TestCase
         $token = $user->createToken('api-token')->plainTextToken;
 
         $response = $this->withHeaders([
-            'Authorization' => "Bearer $token"
+            'Authorization' => "Bearer $token",
         ])->postJson('/api/logout');
 
         $response->assertStatus(200)

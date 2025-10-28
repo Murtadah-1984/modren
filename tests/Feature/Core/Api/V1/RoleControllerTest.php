@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Core\Api\V1;
 
 use App\DTOs\Roles\CreateRoleDTO;
 use App\DTOs\Roles\UpdateRoleDTO;
-use App\Services\RoleService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Mockery;
+use Modules\RBAC\Application\Services\RoleService;
+use Tests\TestCase;
 
-class RoleControllerTest extends TestCase
+final class RoleControllerTest extends TestCase
 {
     protected $roleService;
 
@@ -21,6 +21,12 @@ class RoleControllerTest extends TestCase
         $this->actingAs($user, 'sanctum');
         $this->roleService = Mockery::mock(RoleService::class);
         $this->app->instance(RoleService::class, $this->roleService);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     public function test_index_returns_roles()
@@ -36,7 +42,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => [['id' => 1, 'name' => 'Admin']]
+                'data' => [['id' => 1, 'name' => 'Admin']],
             ]);
     }
 
@@ -55,7 +61,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 2, 'name' => 'Editor']
+                'data' => ['id' => 2, 'name' => 'Editor'],
             ]);
     }
 
@@ -72,7 +78,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'name' => 'Admin']
+                'data' => ['id' => 1, 'name' => 'Admin'],
             ]);
     }
 
@@ -91,7 +97,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'name' => 'Super Admin']
+                'data' => ['id' => 1, 'name' => 'Super Admin'],
             ]);
     }
 
@@ -108,7 +114,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => 'Role deleted successfully'
+                'data' => 'Role deleted successfully',
             ]);
     }
 
@@ -128,7 +134,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'permissions' => ['edit posts']]
+                'data' => ['id' => 1, 'permissions' => ['edit posts']],
             ]);
     }
 
@@ -148,7 +154,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'permissions' => []]
+                'data' => ['id' => 1, 'permissions' => []],
             ]);
     }
 
@@ -168,7 +174,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'permissions' => ['view posts']]
+                'data' => ['id' => 1, 'permissions' => ['view posts']],
             ]);
     }
 
@@ -185,7 +191,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['view posts', 'edit posts']
+                'data' => ['view posts', 'edit posts'],
             ]);
     }
 
@@ -202,13 +208,7 @@ class RoleControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => [['id' => 10, 'name' => 'John Doe']]
+                'data' => [['id' => 10, 'name' => 'John Doe']],
             ]);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

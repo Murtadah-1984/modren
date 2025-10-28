@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Core\Repositories;
 
-use App\Contracts\RoleRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery;
+use Modules\RBAC\Domain\Interfaces\RoleRepositoryInterface;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class RoleRepositoryTest extends TestCase
+final class RoleRepositoryTest extends TestCase
 {
     protected $repository;
 
@@ -16,6 +18,12 @@ class RoleRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = Mockery::mock(RoleRepositoryInterface::class);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     public function test_find_by_id_returns_role_or_null()
@@ -134,11 +142,5 @@ class RoleRepositoryTest extends TestCase
         $this->assertTrue($this->repository->hasPermissionTo($role, 'edit articles'));
         $this->assertTrue($this->repository->hasAnyPermission($role, ['edit articles', 'delete articles']));
         $this->assertFalse($this->repository->hasAllPermissions($role, ['edit articles', 'delete articles']));
-    }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

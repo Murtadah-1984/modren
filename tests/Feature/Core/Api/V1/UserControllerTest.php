@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Core\Api\V1;
 
 use App\DTOs\Users\CreateUserDTO;
 use App\DTOs\Users\UpdateUserDTO;
-use App\Services\UserService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Mockery;
+use Modules\User\Application\Services\UserService;
+use Tests\TestCase;
 
-class UserControllerTest extends TestCase
+final class UserControllerTest extends TestCase
 {
     protected $userService;
 
@@ -18,8 +19,15 @@ class UserControllerTest extends TestCase
         parent::setUp();
         $user = \App\Models\User::factory()->create();
         $this->actingAs($user, 'sanctum');
-        $this->userService = Mockery::mock(UserService::class);
-        $this->app->instance(UserService::class, $this->userService);
+        $service = new UserService();
+        $this->userService = Mockery::mock($service)->makePartial();
+        $this->app->instance(UserService::class, $service);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     public function test_index_returns_users()
@@ -34,7 +42,7 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => [['id' => 1, 'name' => 'John Doe']]
+                'data' => [['id' => 1, 'name' => 'John Doe']],
             ]);
     }
 
@@ -53,7 +61,7 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 2, 'name' => 'Jane Doe']
+                'data' => ['id' => 2, 'name' => 'Jane Doe'],
             ]);
     }
 
@@ -70,7 +78,7 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'name' => 'John Doe']
+                'data' => ['id' => 1, 'name' => 'John Doe'],
             ]);
     }
 
@@ -89,7 +97,7 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => ['id' => 1, 'name' => 'John Updated']
+                'data' => ['id' => 1, 'name' => 'John Updated'],
             ]);
     }
 
@@ -106,7 +114,7 @@ class UserControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => 'User Deleted Successfully'
+                'data' => 'old Deleted Successfully',
             ]);
     }
 
@@ -184,11 +192,5 @@ class UserControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

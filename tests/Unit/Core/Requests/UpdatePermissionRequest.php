@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Permissions\UpdatePermissionRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\RBAC\Interface\Http\Requests\Permissions\UpdatePermissionRequest;
 
 it('passes with valid update data', function () {
     $data = ['name' => 'update-users', 'guard_name' => 'web'];

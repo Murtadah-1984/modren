@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Core\Repositories;
 
-use App\Contracts\PermissionRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery;
+use Modules\RBAC\Domain\Interfaces\PermissionRepositoryInterface;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
-class PermissionRepositoryTest extends TestCase
+final class PermissionRepositoryTest extends TestCase
 {
     protected $repository;
 
@@ -16,6 +18,12 @@ class PermissionRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = Mockery::mock(PermissionRepositoryInterface::class);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     public function test_find_by_id_returns_permission_or_null()
@@ -88,11 +96,4 @@ class PermissionRepositoryTest extends TestCase
         $result = $this->repository->delete($permission);
         $this->assertTrue($result);
     }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
-    }
 }
-

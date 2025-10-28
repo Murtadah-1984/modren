@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Roles\UpdateRoleRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\RBAC\Interface\Http\Requests\Roles\UpdateRoleRequest;
 
 it('passes with valid data', function () {
     $data = ['name' => 'manager', 'guard_name' => 'web'];

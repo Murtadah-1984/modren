@@ -1,11 +1,13 @@
 <?php
 
-use App\Services\PermissionService;
-use App\Contracts\PermissionRepositoryInterface;
+declare(strict_types=1);
+
 use App\DTOs\Permissions\CreatePermissionDTO;
 use App\DTOs\Permissions\UpdatePermissionDTO;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Eloquent\Collection;
+use Modules\RBAC\Application\Services\PermissionService;
+use Modules\RBAC\Domain\Interfaces\PermissionRepositoryInterface;
+use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
     $this->repository = Mockery::mock(PermissionRepositoryInterface::class);

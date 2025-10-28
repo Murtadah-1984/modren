@@ -58,7 +58,7 @@ final class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    // app/Models/User.php
+    // app/Models/old.php
     public function preference(): HasOne
     {
         return $this->hasOne(UserPreference::class);

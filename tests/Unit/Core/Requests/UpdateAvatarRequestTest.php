@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Requests\Users\UpdateAvatarRequest;
+declare(strict_types=1);
+
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
+use Modules\User\Interface\Http\Requests\Users\UpdateAvatarRequest;
 
 it('passes with valid image upload', function () {
     $file = UploadedFile::fake()->image('avatar.jpg', 200, 200);

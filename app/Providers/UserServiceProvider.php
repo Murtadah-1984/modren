@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
-use App\Contracts\PermissionRepositoryInterface;
-use App\Contracts\RoleRepositoryInterface;
-use App\Contracts\UserRepositoryInterface;
-use App\Repositories\EloquentPermissionRepository;
-use App\Repositories\EloquentRoleRepository;
-use App\Repositories\EloquentUserRepository;
-use App\Services\PermissionService;
-use App\Services\RoleService;
-use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
+use Modules\RBAC\Application\Services\PermissionService;
+use Modules\RBAC\Application\Services\RoleService;
+use Modules\RBAC\Domain\Interfaces\PermissionRepositoryInterface;
+use Modules\RBAC\Domain\Interfaces\RoleRepositoryInterface;
+use Modules\RBAC\Infrastructure\Repositories\EloquentPermissionRepository;
+use Modules\RBAC\Infrastructure\Repositories\EloquentRoleRepository;
+use Modules\User\Application\Services\UserService;
+use Modules\User\Domain\Interfaces\UserRepositoryInterface;
+use Modules\User\Infrastructure\Repositories\EloquentUserRepository;
 
-class UserServiceProvider extends ServiceProvider
+final class UserServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

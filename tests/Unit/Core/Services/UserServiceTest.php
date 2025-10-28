@@ -1,12 +1,13 @@
 <?php
 
-use App\Services\UserService;
-use App\Contracts\UserRepositoryInterface;
+declare(strict_types=1);
+
 use App\DTOs\Users\CreateUserDTO;
 use App\DTOs\Users\UpdateUserDTO;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
+use Modules\User\Application\Services\UserService;
+use Modules\User\Domain\Interfaces\UserRepositoryInterface;
 
 beforeEach(function () {
     $this->repository = Mockery::mock(UserRepositoryInterface::class);

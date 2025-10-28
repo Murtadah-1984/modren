@@ -1,21 +1,18 @@
 <?php
 
-use App\Repositories\EloquentPermissionRepository;
-use App\Exceptions\Permissions\{
-    PermissionNotFoundException,
-    PermissionCreationException,
-    PermissionUpdateException,
-    PermissionDeletionException
-};
-use App\Events\Permissions\{
-    PermissionCreated,
-    PermissionUpdated,
-    PermissionDeleted,
-    PermissionsSyncedToRole
-};
+declare(strict_types=1);
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Modules\RBAC\Domain\Events\Permissions\PermissionCreated;
+use Modules\RBAC\Domain\Events\Permissions\PermissionDeleted;
+use Modules\RBAC\Domain\Events\Permissions\PermissionsSyncedToRole;
+use Modules\RBAC\Domain\Events\Permissions\PermissionUpdated;
+use Modules\RBAC\Domain\Exceptions\Permissions\PermissionCreationException;
+use Modules\RBAC\Domain\Exceptions\Permissions\PermissionNotFoundException;
+use Modules\RBAC\Domain\Exceptions\Permissions\PermissionUpdateException;
+use Modules\RBAC\Infrastructure\Repositories\EloquentPermissionRepository;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -43,11 +40,11 @@ it('throws creation exception on failure', function () {
     DB::shouldReceive('commit')->never();
     DB::shouldReceive('rollBack')->once();
 
-    $this->repository = Mockery::mock(EloquentPermissionRepository::class . '[create]', [new Permission()])
+    $this->repository = Mockery::mock(EloquentPermissionRepository::class.'[create]', [new Permission()])
         ->shouldAllowMockingProtectedMethods();
-    $this->repository->shouldReceive('create')->andThrow(new \Exception('DB error'));
+    $this->repository->shouldReceive('create')->andThrow(new Exception('DB error'));
 
-    expect(fn() => $this->repository->create(['name' => 'fail']))->toThrow(PermissionCreationException::class);
+    expect(fn () => $this->repository->create(['name' => 'fail']))->toThrow(PermissionCreationException::class);
 });
 
 it('finds permission by id', function () {
@@ -58,7 +55,7 @@ it('finds permission by id', function () {
 });
 
 it('throws exception if permission not found by id', function () {
-    expect(fn() => $this->repository->findById(9999))->toThrow(PermissionNotFoundException::class);
+    expect(fn () => $this->repository->findById(9999))->toThrow(PermissionNotFoundException::class);
 });
 
 it('finds permission by name', function () {
@@ -88,9 +85,9 @@ it('throws update exception on failure', function () {
     $permission = Permission::create(['name' => 'to-update', 'guard_name' => 'web']);
 
     $mock = Mockery::mock($this->repository)->makePartial();
-    $mock->shouldReceive('update')->andThrow(new \Exception('DB failed'));
+    $mock->shouldReceive('update')->andThrow(new Exception('DB failed'));
 
-    expect(fn() => $mock->update($permission, []))->toThrow(PermissionUpdateException::class);
+    expect(fn () => $mock->update($permission, []))->toThrow(PermissionUpdateException::class);
 });
 
 it('deletes permission successfully', function () {

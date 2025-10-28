@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Roles\AssignPermissionRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\RBAC\Interface\Http\Requests\Roles\AssignPermissionRequest;
 
 it('passes with valid permissions array', function () {
     $data = [

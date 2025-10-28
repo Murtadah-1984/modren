@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Users\AssignRoleRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\User\Interface\Http\Requests\Users\AssignRoleRequest;
 
 it('passes with valid roles array', function () {
     $data = ['roles' => ['admin', 'editor']];

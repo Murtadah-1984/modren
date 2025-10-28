@@ -1,0 +1,7 @@
+{
+    "Core": true,
+    "User": true,
+    "Auth": true,
+    "RBAC": true,
+    "Dashboard": true
+}

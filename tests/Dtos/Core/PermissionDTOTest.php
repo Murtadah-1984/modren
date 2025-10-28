@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Dtos\Core;
 
 use App\DTOs\Permissions\CreatePermissionDTO;
@@ -8,7 +10,7 @@ use App\ValueObjects\Permissions\PermissionName;
 use App\ValueObjects\Roles\GuardName;
 use PHPUnit\Framework\TestCase;
 
-class PermissionDTOTest extends TestCase
+final class PermissionDTOTest extends TestCase
 {
     public function test_create_permission_dto_from_array()
     {
@@ -114,4 +116,3 @@ class PermissionDTOTest extends TestCase
         $this->assertTrue($dto->hasGroupUpdate());
     }
 }
-

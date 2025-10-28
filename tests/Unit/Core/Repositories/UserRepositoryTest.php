@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Core\Repositories;
 
-use App\Contracts\UserRepositoryInterface;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery;
+use Modules\User\Domain\Interfaces\UserRepositoryInterface;
 use Tests\TestCase;
 
-class UserRepositoryTest extends TestCase
+final class UserRepositoryTest extends TestCase
 {
     protected $repository;
 
@@ -17,6 +19,12 @@ class UserRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = Mockery::mock(UserRepositoryInterface::class);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     public function test_find_by_id_returns_user_or_null()
@@ -132,11 +140,5 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(User::class, $this->repository->syncPermissions($user, $permissions));
         $this->assertTrue($this->repository->hasRole($user, 'admin'));
         $this->assertTrue($this->repository->hasPermission($user, 'edit articles'));
-    }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

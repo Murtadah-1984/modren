@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\CheckPermission;
-use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Modules\RBAC\Interface\Http\Middleware\CheckPermission;
+use Modules\RBAC\Interface\Http\Middleware\CheckRole;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -21,10 +21,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(prepend: [
             Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            Illuminate\Routing\Middleware\SubstituteBindings::class,
+            Illuminate\Http\Middleware\HandleCors::class,
         ]);
 
         $middleware->alias([
-            'verified' => App\Http\Middleware\EnsureEmailIsVerified::class,
+            'verified' => \Modules\Auth\Interface\Http\Middleware\EnsureEmailIsVerified::class,
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
         ]);
 
         /*

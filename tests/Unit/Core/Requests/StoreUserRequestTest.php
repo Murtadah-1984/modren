@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Requests\Users\StoreUserRequest;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Validator;
+use Modules\User\Interface\Http\Requests\Users\StoreUserRequest;
 
 it('passes with valid user data', function () {
     $data = [

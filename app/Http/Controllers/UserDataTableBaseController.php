@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\UserService;
+use Modules\User\Application\Services\UserService;
 use Yajra\DataTables\Facades\DataTables;
 
 final class UserDataTableBaseController extends BaseController

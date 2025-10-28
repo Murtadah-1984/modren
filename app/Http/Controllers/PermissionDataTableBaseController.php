@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\PermissionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\View;
 use Illuminate\View\Factory;
+use Modules\RBAC\Application\Services\PermissionService;
 use Yajra\DataTables\DataTableAbstract;
 use Yajra\DataTables\Exceptions\Exception;
 

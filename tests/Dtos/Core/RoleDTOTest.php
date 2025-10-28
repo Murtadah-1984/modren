@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Dtos\Core;
 
 use App\DTOs\Roles\CreateRoleDTO;
@@ -9,7 +11,7 @@ use App\ValueObjects\Roles\RoleDescription;
 use App\ValueObjects\Roles\RoleName;
 use PHPUnit\Framework\TestCase;
 
-class RoleDTOTest extends TestCase
+final class RoleDTOTest extends TestCase
 {
     public function test_create_role_dto_from_array()
     {
