@@ -116,7 +116,7 @@ return [
         | app folder name
         | for example can change it to 'src' or 'App'
         */
-        'app_folder' => 'app/',
+        'app_folder' => '/',
 
         /*
         |--------------------------------------------------------------------------
@@ -141,13 +141,13 @@ return [
             'helpers' => ['path' => 'app/Helpers', 'generate' => false],
             'interfaces' => ['path' => 'Domain/Interfaces', 'generate' => true],
             'listener' => ['path' => 'app/Listeners', 'generate' => false],
-            'model' => ['path' => 'app/Models', 'generate' => false],
+            'model' => ['path' => 'Domain/Models', 'generate' => true],
             'notifications' => ['path' => 'app/Notifications', 'generate' => false],
             'observer' => ['path' => 'app/Observers', 'generate' => false],
             'policies' => ['path' => 'app/Policies', 'generate' => false],
-            'provider' => ['path' => 'app/Providers', 'generate' => true],
+            'provider' => ['path' => '/Providers', 'generate' => true],
             'repository' => ['path' => 'Infrastructure/Repositories', 'generate' => true],
-            'resource' => ['path' => 'app/Transformers', 'generate' => true],
+            'resource' => ['path' => 'app/Transformers', 'generate' => false],
             'route-provider' => ['path' => '/Providers', 'generate' => true],
             'rules' => ['path' => 'app/Rules', 'generate' => false],
             'service-domain' => ['path' => 'Domain/Services', 'generate' => true],

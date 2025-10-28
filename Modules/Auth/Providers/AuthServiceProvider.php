@@ -14,9 +14,9 @@ final class AuthServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'User';
+    protected string $name = 'Auth';
 
-    protected string $nameLower = 'user';
+    protected string $nameLower = 'auth';
 
     /**
      * Boot the application events.

@@ -12,9 +12,9 @@ class RBACServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'User';
+    protected string $name = 'RBAC';
 
-    protected string $nameLower = 'user';
+    protected string $nameLower = 'rbac';
 
     /**
      * Boot the application events.

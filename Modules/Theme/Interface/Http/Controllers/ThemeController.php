@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Modules\RBAC\Interface\Http\Controllers;
+namespace Modules\Theme\Interface\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Modules\Core\Interface\Http\Controllers\CoreWebController;
 
-final class RBACController extends Controller
+final class ThemeController extends CoreWebController
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('rbac::index');
+        return view('theme::dashboard');
     }
 
     /**
@@ -22,7 +22,7 @@ final class RBACController extends Controller
      */
     public function create()
     {
-        return view('rbac::create');
+        return view('theme::create');
     }
 
     /**
@@ -35,7 +35,7 @@ final class RBACController extends Controller
      */
     public function show($id)
     {
-        return view('rbac::show');
+        return view('theme::show');
     }
 
     /**
@@ -43,7 +43,7 @@ final class RBACController extends Controller
      */
     public function edit($id)
     {
-        return view('rbac::edit');
+        return view('theme::edit');
     }
 
     /**

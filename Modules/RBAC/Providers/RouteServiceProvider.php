@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'User';
+    protected string $name = 'RBAC';
 
     /**
      * Called before routes are registered.

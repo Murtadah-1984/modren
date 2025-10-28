@@ -7,6 +7,7 @@ namespace Modules\Core\Interface\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
+use Modules\Theme\Application\Services\ThemeApplicationService;
 
 class CoreWebController extends Controller
 {

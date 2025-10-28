@@ -3,5 +3,7 @@
     "User": true,
     "Auth": true,
     "RBAC": true,
-    "Dashboard": true
+    "Dashboard": true,
+    "Theme": true,
+    "Shared": true
 }

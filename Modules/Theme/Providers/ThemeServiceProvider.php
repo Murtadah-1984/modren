@@ -1,22 +1,20 @@
 <?php
 
-namespace Modules\Core\Providers;
+namespace Modules\Theme\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\User\Providers\EventServiceProvider;
-use Modules\User\Providers\RouteServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class CoreServiceProvider extends ServiceProvider
+class ThemeServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'Core';
+    protected string $name = 'Theme';
 
-    protected string $nameLower = 'core';
+    protected string $nameLower = 'theme';
 
     /**
      * Boot the application events.
@@ -28,7 +26,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
+        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
     }
 
     /**
